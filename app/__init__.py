@@ -5,8 +5,17 @@
 # coding:utf8
 from flask import Flask,render_template
 
+import pymysql
+from flask_sqlalchemy import SQLAlchemy
+
+pymysql.install_as_MySQLdb()
+
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:MySQL503@127.0.0.1:3306/movie"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
+app.config["SECRET_KEY"] = '8c5e7c76e3c042e3b65e3188fdd0e3b1'
 app.debug = True
+db = SQLAlchemy(app)
 
 from app.home import home as home_blueprint
 from app.admin import admin as admin_blueprint
