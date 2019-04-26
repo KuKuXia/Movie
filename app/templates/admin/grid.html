@@ -1,5 +1,3 @@
-
-
 <ul class="sidebar-menu">
     <li class="header">管理菜单</li>
     <li class="treeview" id="g-1">
@@ -8,9 +6,9 @@
             <span>首页</span>
             <span class="label label-primary pull-right">1</span>
         </a>
-        <ul class="treeview-menu" >
+        <ul class="treeview-menu">
             <li id="g-1-1">
-                <a href=" {{ url_for('admin.index') }}" >
+                <a href=" {{ url_for('admin.index') }}">
                     <i class="fa fa-circle-o"></i> 控制面板
                 </a>
             </li>
@@ -29,7 +27,7 @@
                 </a>
             </li>
             <li id="g-2-2">
-                <a href="{{ url_for('admin.tag_list') }}">
+                <a href="{{ url_for('admin.tag_list', page=1 ) }}">
                     <i class="fa fa-circle-o"></i> 标签列表
                 </a>
             </li>
@@ -41,14 +39,14 @@
             <span>电影管理</span>
             <span class="label label-primary pull-right">2</span>
         </a>
-        <ul class="treeview-menu" >
+        <ul class="treeview-menu">
             <li id="g-3-1">
                 <a href="{{ url_for('admin.movie_add')}}">
                     <i class="fa fa-circle-o"></i> 添加电影
                 </a>
             </li>
             <li id="g-3-2">
-                <a href="{{ url_for('admin.movie_list') }}">
+                <a href="{{ url_for('admin.movie_list', page=1) }}">
                     <i class="fa fa-circle-o"></i> 电影列表
                 </a>
             </li>
@@ -67,7 +65,7 @@
                 </a>
             </li>
             <li id="g-4-2">
-                <a href="{{ url_for('admin.preview_list')}}">
+                <a href="{{ url_for('admin.preview_list',page=1)}}">
                     <i class="fa fa-circle-o"></i> 预告列表
                 </a>
             </li>
@@ -81,7 +79,7 @@
         </a>
         <ul class="treeview-menu">
             <li id="g-5-1">
-                <a href="{{ url_for('admin.user_list') }}">
+                <a href="{{ url_for('admin.user_list',page=1) }}">
                     <i class="fa fa-circle-o"></i> 会员列表
                 </a>
             </li>
@@ -95,7 +93,7 @@
         </a>
         <ul class="treeview-menu">
             <li id="g-6-1">
-                <a href="{{ url_for('admin.comment_list') }}">
+                <a href="{{ url_for('admin.comment_list', page=1) }}">
                     <i class="fa fa-circle-o"></i> 评论列表
                 </a>
             </li>
@@ -109,7 +107,7 @@
         </a>
         <ul class="treeview-menu">
             <li id="g-7-1">
-                <a href="{{ url_for('admin.moviecol_list') }}">
+                <a href="{{ url_for('admin.moviecol_list', page=1) }}">
                     <i class="fa fa-circle-o"></i> 收藏列表
                 </a>
             </li>
@@ -123,17 +121,17 @@
         </a>
         <ul class="treeview-menu">
             <li id="g-8-1">
-                <a href="{{ url_for('admin.oplog_list') }}">
+                <a href="{{ url_for('admin.oplog_list',page=1) }}">
                     <i class="fa fa-circle-o"></i> 操作日志列表
                 </a>
             </li>
             <li id="g-8-2">
-                <a href="{{ url_for('admin.adminloginlog_list') }}">
+                <a href="{{ url_for('admin.adminloginlog_list',page=1) }}">
                     <i class="fa fa-circle-o"></i> 管理员登录日志列表
                 </a>
             </li>
             <li id="g-8-3">
-                <a href="{{ url_for('admin.userloginlog_list') }}">
+                <a href="{{ url_for('admin.userloginlog_list',page=1) }}">
                     <i class="fa fa-circle-o"></i> 会员登录日志列表
                 </a>
             </li>
@@ -152,7 +150,7 @@
                 </a>
             </li>
             <li id="g-9-2">
-                <a href="{{ url_for('admin.auth_list') }}">
+                <a href="{{ url_for('admin.auth_list',page=1) }}">
                     <i class="fa fa-circle-o"></i> 权限列表
                 </a>
             </li>
@@ -171,7 +169,7 @@
                 </a>
             </li>
             <li id="g-10-2">
-                <a href=" {{ url_for('admin.role_list') }}">
+                <a href=" {{ url_for('admin.role_list',page=1) }}">
                     <i class="fa fa-circle-o"></i> 角色列表
                 </a>
             </li>
@@ -190,7 +188,7 @@
                 </a>
             </li>
             <li id="g-11-2">
-                <a href=" {{ url_for('admin.admin_list')}} ">
+                <a href=" {{ url_for('admin.admin_list',page=1)}} ">
                     <i class="fa fa-circle-o"></i> 管理员列表
                 </a>
             </li>
