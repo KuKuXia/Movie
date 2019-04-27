@@ -22,6 +22,10 @@ class User(db.Model):
     comments = db.relationship("Comment", backref='user')  # 评论外键关系关联
     moviecols = db.relationship("Moviecol", backref='user')  # 收藏外键关系关联
 
+    def check_pwd(self, pwd):
+        from werkzeug.security import check_password_hash
+        return check_password_hash(self.pwd, pwd)
+
     def __repr__(self):
         return "<User %r>" % self.name
 

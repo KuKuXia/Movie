@@ -127,6 +127,9 @@ def pwd():
     if form.validate_on_submit():
         data = form.data
         admin = Admin.query.filter_by(name=session["admin"]).first()
+        if not admin.check_pwd(data["old_pwd"]):
+            flash("旧密码错误！", "err")
+            return redirect(url_for('admin.pwd'))
         from werkzeug.security import generate_password_hash
         admin.pwd = generate_password_hash(data["new_pwd"])
         db.session.add(admin)
@@ -134,7 +137,7 @@ def pwd():
         reason = "修改管理员%s密码" % session["admin"]
         add_oplog(reason)
         flash("密码修改成功, 请重新登录!", 'ok')
-        redirect(url_for('admin.logout'))
+        return redirect(url_for('admin.logout'))
     return render_template("admin/pwd.html", form=form)
 
 
