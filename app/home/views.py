@@ -9,7 +9,7 @@ import datetime
 from . import home
 from flask import render_template, redirect, url_for, flash, session, request
 from app.home.forms import RegistForm, LoginForm, UserdetailForm, DataRequired, PwdForm
-from app.models import User, Userlog, Preview, Tag
+from app.models import User, Userlog, Preview, Tag, Movie
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 from app import db, app
@@ -35,19 +35,78 @@ def change_filename(filename):
 
 
 # 首页
-@home.route("/")
-def index():
+@home.route("/<int:page>", methods=['GET'])
+def index(page=None):
     tags = Tag.query.all()
+    page_data = Movie.query
+
+    # 标签筛选
     tid = request.args.get("tid", 0)
+    if int(tid) != 0:
+        page_data = page_data.filter_by(tag_id=int(tid))
+
+    # 星级筛选
     star = request.args.get("star", 0)
+    if int(star) != 0:
+        page_data = page_data.filter_by(star=int(star))
+
+    # 时间筛选
     time = request.args.get("time", 0)
+    if int(time) != 0:
+        if int(time) == 1:
+            page_data = page_data.order_by(
+                Movie.addtime.desc()
+            )
+        else:
+            page_data = page_data.order_by(
+                Movie.addtime.asc()
+            )
+
+    # 播放数量筛选
     pm = request.args.get("pm", 0)
+    if int(pm) != 0:
+        if int(pm) == 1:
+            page_data = page_data.order_by(
+                Movie.playnum.desc()
+            )
+        else:
+            page_data = page_data.order_by(
+                Movie.playnum.asc()
+            )
+
+    # 评论数量筛选
     cm = request.args.get("cm", 0)
+    if int(cm) != 0:
+        if int(cm) == 1:
+            page_data = page_data.order_by(
+                Movie.commentnum.desc()
+            )
+        else:
+            page_data = page_data.order_by(
+                Movie.commentnum.asc()
+            )
+    if page is None:
+        page = 1
+    page_data = page_data.paginate(page=int(page), per_page=1)
+    p = dict(
+        tid=tid,
+        star=star,
+        time=time,
+        pm=pm,
+        cm=cm
+    )
+    # print(request.url)
+    url = request.url
+    search_index = url.find("?")
+    search_str = ""
 
-    return render_template("home/index.html", tags=tags)
+    if search_index != -1:
+        search_str = url[search_index:]
+    # print(search_str)
+    return render_template("home/index.html", tags=tags, p=p, page_data=page_data, search_str=search_str)
 
 
-# 首页
+# 首页动画
 @home.route("/animation/")
 def animation():
     """
@@ -218,7 +277,7 @@ def search():
     return render_template("home/search.html")
 
 
-# 电影详情
+# 电影播放
 @home.route('/play/')
 @user_login_req
 def play():

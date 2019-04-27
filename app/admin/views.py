@@ -218,7 +218,7 @@ def tag_edit(id=None):
 @admin_auth
 def movie_add():
     form = MovieFrom()
-    form.tag_id.choices = [(v.id, v.name) for v in Tag.query.all()]
+    form.tag_id.choices = [(v.id, v.name) for v in Tag.query.all()]  # 更新标签列表
     form.logo.validators = [DataRequired("请上传封面！")]
     form.url.validators = [DataRequired("请上传文件！")]
     if form.validate_on_submit():
@@ -294,6 +294,7 @@ def movie_del(id=None):
 @admin_auth
 def movie_edit(id=None):
     form = MovieFrom()
+    form.tag_id.choices = [(v.id, v.name) for v in Tag.query.all()]  # 更新标签列表
 
     movie = Movie.query.get_or_404(int(id))
     if request.method == "GET":
