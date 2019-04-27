@@ -45,7 +45,8 @@
         <div class="navbar-collapse collapse">
             <form class="navbar-form navbar-left" role="search" style="margin-top:18px;">
                 <div class="form-group input-group">
-                    <input type="text" class="form-control" placeholder="请输入电影名！" id="key_movie">
+                    <input type="text" class="form-control"
+                           placeholder="请输入电影名！" id="key_movie">
                     <span class="input-group-btn">
                         <a class="btn btn-default" id="do_search"><span class="glyphicon glyphicon-search"></span>&nbsp;搜索</a>
                     </span>
@@ -104,7 +105,7 @@
 <script>
     $(function () {
         new WOW().init();
-    })
+    });
 
 </script>
 <script>
@@ -116,6 +117,7 @@
             var key = $("#key_movie").val();
             location.href = "{{ url_for('home.search', page=1) }}?key=" + key
         });
+
     });
 
 </script>

@@ -271,14 +271,41 @@ def moviecol():
 
 
 # 搜索电影
-@home.route('/search/')
+@home.route('/search/<int:page>', methods=["GET"])
 @user_login_req
-def search():
-    return render_template("home/search.html")
+def search(page=None):
+    if page is None:
+        page = 1
+    key = request.args.get("key", "")
+    movie_count = Movie.query.filter(
+        Movie.title.ilike('%' + key + '%')
+    ).count()
+    page_data = Movie.query.filter(
+        Movie.title.ilike('%' + key + '%')
+    ).order_by(
+        Movie.addtime.desc()
+    ).paginate(page=page, per_page=1)
+
+    # print(request.url)
+    url = request.url
+    search_index = url.find("?")
+    search_str = ""
+
+    if search_index != -1:
+        search_str = url[search_index:]
+    # print(search_str)
+
+    return render_template("home/search.html", key=key, page_data=page_data, movie_count=movie_count,
+                           search_str=search_str)
 
 
 # 电影播放
-@home.route('/play/')
+@home.route('/play/<int:id>', methods=["GET"])
 @user_login_req
-def play():
-    return render_template("home/play.html")
+def play(id=None):
+    movie = Movie.query.join(Tag).filter(
+        Tag.id == Movie.tag_id,
+        Movie.id == int(id)
+    ).first_or_404()
+
+    return render_template("home/play.html", movie=movie)
