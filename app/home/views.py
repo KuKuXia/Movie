@@ -9,7 +9,7 @@ import datetime
 from . import home
 from flask import render_template, redirect, url_for, flash, session, request
 from app.home.forms import RegistForm, LoginForm, UserdetailForm, DataRequired, PwdForm
-from app.models import User, Userlog
+from app.models import User, Userlog, Preview, Tag
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 from app import db, app
@@ -37,13 +37,26 @@ def change_filename(filename):
 # 首页
 @home.route("/")
 def index():
-    return render_template("home/index.html")
+    tags = Tag.query.all()
+    tid = request.args.get("tid", 0)
+    star = request.args.get("star", 0)
+    time = request.args.get("time", 0)
+    pm = request.args.get("pm", 0)
+    cm = request.args.get("cm", 0)
+
+    return render_template("home/index.html", tags=tags)
 
 
 # 首页
 @home.route("/animation/")
 def animation():
-    return render_template("home/animation.html")
+    """
+    首页轮播动画
+    """
+    data = Preview.query.all()
+    for v in data:
+        v.id = v.id - 9
+    return render_template("home/animation.html", data=data[0:5])
 
 
 # 登录页面
@@ -178,10 +191,17 @@ def comments():
 
 
 # 登录日志
-@home.route('/loginlog/')
+@home.route('/loginlog/<int:page>', methods=["GET"])
 @user_login_req
-def loginlog():
-    return render_template("home/loginlog.html")
+def loginlog(page=None):
+    if page is None:
+        page = 1
+    page_data = Userlog.query.filter_by(
+        user_id=session["user_id"]
+    ).order_by(
+        Userlog.addtime.desc()
+    ).paginate(page=page, per_page=10)
+    return render_template("home/loginlog.html", page_data=page_data)
 
 
 # 收藏电影

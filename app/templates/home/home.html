@@ -6,11 +6,11 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1 , user-scalable=no">
-    <title>微电影</title>
-    <link rel="shortcut icon" href="{{ url_for('static', filename='base/images/logo.png')}}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base/css/bootstrap.min.css')}}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base/css/bootstrap-movie.css')}}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='base/css/animate.css')}}">
+    <title>mtianyan弹幕电影</title>
+    <link rel="shortcut icon" href="{{ url_for('static',filename='base/images/logo.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='base/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='base/css/bootstrap-movie.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='base/css/animate.css') }}">
     <style>
         .navbar-brand > img {
             display: inline;
@@ -20,8 +20,9 @@
             padding: 3px;
             border: 1px solid #ccc
         }
-        {% block css %} {% endblock %}
+
     </style>
+    {% block css %} {% endblock %}
 </head>
 
 <body>
@@ -35,8 +36,8 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a href="{{ url_for('home.index') }}" class="navbar-brand" style="width:250px;">
-                <img src="{{ url_for('static', filename='base/images/logo.png')}}" style="height:30px;">&nbsp;微电影
+            <a href="{{url_for('home.index')}}" class="navbar-brand" style="width:250px;">
+                <img src="{{ url_for('static',filename='base/images/logo.png') }}" style="height:30px;">&nbsp;弹幕电影
             </a>
         </div>
         <!--小屏幕导航按钮和logo-->
@@ -44,15 +45,15 @@
         <div class="navbar-collapse collapse">
             <form class="navbar-form navbar-left" role="search" style="margin-top:18px;">
                 <div class="form-group input-group">
-                    <input type="text" class="form-control" placeholder="请输入电影名！">
+                    <input type="text" class="form-control" placeholder="请输入电影名！" id="key_movie">
                     <span class="input-group-btn">
-                        <a class="btn btn-default" href="{{ url_for('home.search') }}"><span class="glyphicon glyphicon-search"></span>&nbsp;搜索</a>
+                        <a class="btn btn-default" id="do_search"><span class="glyphicon glyphicon-search"></span>&nbsp;搜索</a>
                     </span>
                 </div>
             </form>
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a class="curlink" href="{{ url_for('home.index') }}"><span class="glyphicon glyphicon-film"></span>&nbsp;电影</a>
+                    <a class="curlink" href="{{url_for('home.index')}}"><span class="glyphicon glyphicon-film"></span>&nbsp;电影</a>
                 </li>
                 <li>
                     <a class="curlink" href="{{ url_for('home.login')}}"><span
@@ -87,19 +88,18 @@
         <div class="row">
             <div class="col-md-12">
                 <p>
-                    ©&nbsp;2017&nbsp;flaskmovie.imooc.com&nbsp;京ICP备 13046642号-2
+                    ©&nbsp;2018&nbsp;movie.mtianyan.cn&nbsp;陕ICP备16011333号-1
                 </p>
             </div>
         </div>
     </div>
 </footer>
 <!--底部-->
-<script src="{{ url_for('static', filename='base/js/jquery.min.js')}}"></script>
-<script src="{{ url_for('static', filename='base/js/bootstrap.min.js')}}"></script>
-<script src="{{ url_for('static', filename='base/js/jquery.singlePageNav.min.js')}}"></script>
-<script src="{{ url_for('static', filename='base/js/wow.min.js')}}"></script>
-<script src="{{ url_for('static', filename='lazyload/jquery.lazyload.min.js')}}"></script>
-<script src="//cdn.bootcss.com/holder/2.9.4/holder.min.js"></script>
+<script src="{{ url_for('static',filename='base/js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static',filename='base/js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static',filename='base/js/jquery.singlePageNav.min.js') }}"></script>
+<script src="{{ url_for('static',filename='base/js/wow.min.js') }}"></script>
+<script src="{{ url_for('static',filename='lazyload/jquery.lazyload.min.js') }}"></script>
 <script>
     $(function () {
         new WOW().init();
@@ -111,9 +111,16 @@
         $("img.lazy").lazyload({
             effect: "fadeIn"
         });
+        $("#do_search").click(function () {
+            var key = $("#key_movie").val();
+            location.href = "{{ url_for('home.search', page=1) }}?key=" + key
+        });
     });
 
 </script>
-{% block js %} {% endblock %}
+<script src="https://cdn.bootcss.com/holder/2.9.4/holder.min.js"></script>
+{% block js %}
+
+{% endblock %}
 </body>
 </html>
