@@ -49,7 +49,7 @@
                                             {{ v.addtime }}
                                         </span>
                                     </span>
-                            关于电影<a>《{{ v.movie.title }}》</a> {{ v.content }}
+                            关于电影<a>《{{ v.movie.title }}》</a> {{ v.content | safe }}
                             <br><a href="{{ url_for('admin.comment_del', id=v.id) }}"
                                    class="label label-danger pull-right">删除</a>
                         </div>
