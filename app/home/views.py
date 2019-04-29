@@ -9,7 +9,7 @@ import datetime
 from . import home
 from flask import render_template, redirect, url_for, flash, session, request
 from app.home.forms import RegistForm, LoginForm, UserdetailForm, DataRequired, PwdForm, CommentForm
-from app.models import User, Userlog, Preview, Tag, Movie, Comment
+from app.models import User, Userlog, Preview, Tag, Movie, Comment, Moviecol
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 from app import db, app
@@ -87,7 +87,7 @@ def index(page=None):
             )
     if page is None:
         page = 1
-    page_data = page_data.paginate(page=int(page), per_page=1)
+    page_data = page_data.paginate(page=int(page), per_page=2)
     p = dict(
         tid=tid,
         star=star,
@@ -275,12 +275,59 @@ def loginlog(page=None):
     return render_template("home/loginlog.html", page_data=page_data)
 
 
-# 收藏电影
-@home.route('/moviecol/')
+# 添加电影收藏
+@home.route('/moviecol/add/', methods=["GET"])
 @user_login_req
-def moviecol():
-    return render_template("home/moviecol.html")
+def moviecol_add():
+    uid = request.args.get("uid", "")
+    mid = request.args.get("mid", "")
+    moviecol = Moviecol.query.filter_by(
+        user_id=int(uid),
+        movie_id=int(mid),
+    ).count()
+    if moviecol == 1:
+        data = dict(ok=0)
+    if moviecol == 0:
+        moviecol = Moviecol(
+            user_id=int(uid),
+            movie_id=int(mid)
+        )
+        db.session.add(moviecol)
+        db.session.commit()
+        data = dict(ok=1)
+    import json
+    return json.dumps(data)
 
+
+# 收藏电影
+@home.route('/moviecol/<int:page>', methods=["GET", "POST"])
+@user_login_req
+def moviecol(page=None):
+    if page is None:
+        page = 1
+    page_data = Moviecol.query.join(
+        Movie
+    ).join(
+        User
+    ).filter(
+        Movie.id == Moviecol.movie_id,
+        User.id == session["user_id"],
+    ).order_by(
+        Moviecol.addtime.desc()
+    ).paginate(page=page, per_page=10)
+    return render_template("home/moviecol.html", page_data=page_data)
+
+
+# 删除收藏电影
+# 删除收藏
+@home.route("/moviecol/del/<int:id>", methods=["GET"])
+@user_login_req
+def moviecol_del(id=None):
+    moviecol = Moviecol.query.get_or_404(int(id))
+    db.session.delete(moviecol)
+    db.session.commit()
+    flash(" 删除收藏成功！", "ok")
+    return redirect(url_for('home.moviecol', page=1))
 
 # 搜索电影
 @home.route('/search/<int:page>', methods=["GET"])
@@ -289,6 +336,9 @@ def search(page=None):
     if page is None:
         page = 1
     key = request.args.get("key", "")
+    if key == "":
+        flash("请输入电影名称", "err")
+        return redirect(url_for('home.index', page=1))
     movie_count = Movie.query.filter(
         Movie.title.ilike('%' + key + '%')
     ).count()
@@ -345,6 +395,8 @@ def play(id=None, page=None):
         db.session.add(comment)
         db.session.commit()
         movie.commentnum = movie.commentnum + 1
+        db.session.add(movie)
+        db.session.commit()
         flash("添加评论成功", "ok")
         return redirect(url_for('home.play', id=movie.id, page=1))
     db.session.add(movie)
