@@ -22,7 +22,8 @@
                 {% for v in data %} {# 这个地方的imgCard序号只能从0开始#}
                 <li id="imgCard{{ loop.index-1 }}">
 
-                    <a href=""><span style="opacity:0;"></span></a>
+                    <a href="{{ url_for('home.play',id=11,page=1) }}" target="_blank"><span
+                            style="opacity:0;"></span></a>
                     <img src="{{ url_for('static',filename='uploads/'+v.logo) }}">
                     <p style="bottom:0">{{ v.title }}</p>
                 </li>

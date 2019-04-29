@@ -348,6 +348,10 @@ def preview_add():
     form.logo.validators = [DataRequired("请上传封面！")]
     if form.validate_on_submit():
         data = form.data
+        preview_count = Preview.query.filter_by(title=data['title']).count()
+        if preview_count == 1:
+            flash("预告已经存在！", "err")
+            return redirect(url_for('admin.preview_add'))
         file_logo = secure_filename(form.logo.data.filename)
         if not os.path.exists(app.config["UP_DIR"]):
             os.makedirs(app.config["UP_DIR"])

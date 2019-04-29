@@ -113,9 +113,10 @@ def animation():
     首页轮播动画
     """
     data = Preview.query.all()
+    print(data)
     for v in data:
         v.id = v.id - 9
-    return render_template("home/animation.html", data=data[0:5])
+    return render_template("home/animation.html", data=data[1:6])
 
 
 # 登录页面
