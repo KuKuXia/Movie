@@ -1,13 +1,16 @@
 {% extends "admin/admin.html" %}
 
 {% block css %}
-.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{
-vertical-align:middle;
-text-align:left;
-}
-.td_bd{
-font-weight:bold;
-}
+<style>
+    .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+        vertical-align: middle;
+        text-align: left;
+    }
+
+    .td_bd {
+        font-weight: bold;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -50,8 +53,15 @@ font-weight:bold;
                         <tr>
                             <td class="td_bd">头像：</td>
                             <td>
-                                <img src="{{ url_for('static', filename='uploads/users/' + user.face) }}"
-                                     style="width: 100px;" class="img-responsive" alt="">
+                                {% if user.face %}
+                                <img alt="100x100"
+                                     src="{{ url_for('static',filename='uploads/users/'+user.face) }}"
+                                     class="img-responsive"
+                                     style="border:1px solid #abcdef;width:100px;">
+                                {% else %}
+                                <img alt="100x100" data-src="holder.js/100x100" class="img-responsive"
+                                     style="border:1px solid #abcdef;width:100px;">
+                                {% endif %}
                             </td>
                         </tr>
                         <tr>
@@ -84,3 +94,11 @@ font-weight:bold;
 
 {% endblock %}
 
+{% block js %}
+<script>
+    $(document).ready(function () {
+        $("#g-5").addClass("active");
+        $("#g-5-1").addClass("active");
+    });
+</script>
+{% endblock %}

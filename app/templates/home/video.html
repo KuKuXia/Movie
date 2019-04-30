@@ -1,40 +1,44 @@
 {% extends "home/home.html" %}
-{% import 'ui/comment_page.html' as pg %}
+{% import "ui/comment_page.html" as pg %}
 
 {% block css %}
 <!--播放页面-->
-<link rel="stylesheet" type="text/css" href=" {{ url_for('static', filename='jwplayer/skins/stormtrooper.css')}}">
-<script type="text/javascript" src="{{ url_for('static', filename='ueditor/ueditor.config.js')}}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='ueditor/ueditor.all.js')}}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='ueditor/lang/zh-cn/zh-cn.js')}}"></script>
+<link rel="stylesheet" href="{{ url_for('static',filename='dplayer/dist/DPlayer.min.css') }}">
+<script src="{{ url_for('static',filename='dplayer/plugin/flv.min.js') }}"></script>
+<script src="{{ url_for('static',filename='dplayer/plugin/hls.min.js') }}"></script>
+<script src="{{ url_for('static',filename='dplayer/dist/DPlayer.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='ueditor/ueditor.config.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='ueditor/ueditor.all.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename='ueditor/lang/zh-cn/zh-cn.js') }}"></script>
 <script>
     SyntaxHighlighter.all();
+
 </script>
 <!--播放页面-->
-
 <style>
     .col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9 {
         padding-right: 3px;
         padding-left: 3px;
     }
-</style>
 
+    .dplayer-comment-setting-type > label {
+        display: inline;
+    }
+</style>
 {% endblock %}
 
-
 {% block content %}
-
 <div class="row">
     <div class="col-md-8">
-        <div id="moviecontainer"></div>
+        <div id="dplayer1" style="height:500px;width: 774px;"></div>
     </div>
     <div class="col-md-4" style="height:500px;">
         <div class="panel panel-info">
             <div class="panel-heading">
                 <h3 class="panel-title"><span class="glyphicon glyphicon-facetime-video"></span>&nbsp;电影介绍</h3>
             </div>
-            <div class="panel-body" style="height:459px;overflow: auto;display: block">
-                <table class="table" style="min-width: 100%">
+            <div class="panel-body" style="height:459px;">
+                <table class="table">
                     <tr>
                         <td style="width:30%;color:#ccc;font-weight:bold;font-style:italic;">
                             <span class="glyphicon glyphicon-film"></span>&nbsp;片名
@@ -68,8 +72,7 @@
                                 {% for val in range(1,movie.star+1) %}
                                 <span class="glyphicon glyphicon-star" style="color:#FFD119"></span>
                                 {% endfor %}
-
-                                {% for val in range(0, 5-movie.star) %}
+                                {% for val in range(1,5-movie.star+1) %}
                                 <span class="glyphicon glyphicon-star-empty" style="color:#FFD119"></span>
                                 {% endfor %}
                             </div>
@@ -97,7 +100,7 @@
                         <td style="color:#ccc;font-weight:bold;font-style:italic;">
                             <span class="glyphicon glyphicon-picture"></span>&nbsp;影片介绍
                         </td>
-                        <td style="min-width: 50%">
+                        <td>
                             {{ movie.info }}
                         </td>
                     </tr>
@@ -135,25 +138,23 @@
                     <div class="form-group">
                         <div>
                             <label for="input_content">{{ form.content.label }}</label>
+                            {{ form.content }}
                         </div>
-                        {{ form.content }}
-
+                        {% for err in form.content.errors %}
+                        <div class="col-md-12">
+                            <font style="color:red">{{ err }}</font>
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% for err in form.content.errors %}
-                    <div class="col-md-12">
-                        <font style="color:red">{{ err }}</font>
-                    </div>
-                    {% endfor %}
-
                     {{ form.csrf_token }}
                     {{ form.submit }}
                     &nbsp;
                     <a class="btn btn-danger" id="btn-col"><span class="glyphicon glyphicon-heart"></span>&nbsp;收藏电影</a>
-                    <div class="col-md-12">
-                        <p style="color:green" id="show_col_msg"></p>
-                    </div>
-                    <div class="clearfix"></div>
                 </form>
+                <div class="col-md-12">
+                    <font style="color:green" id="show_col_msg"></font>
+                </div>
+                <div class="clearfix"></div>
                 {% endif %}
                 <ul class="commentList">
                     {% for v in page_data.items %}
@@ -161,13 +162,13 @@
                         <a>
                             <i class="avatar size-L radius">
                                 {% if v.user.face %}
-                                <img alt="50x50" src="{{ url_for('static', filename='uploads/users/' + v.user.face) }}"
+                                <img alt="50x50"
+                                     src="{{ url_for('static',filename='uploads/users/'+v.user.face) }}"
                                      class="img-circle"
-                                     style="border:1px solid #abcdef;width: 50px;">
+                                     style="border:1px solid #abcdef;width:50px;">
                                 {% else %}
-                                <img alt="50x50" data-src="holder.js/50x50"
-                                     class="img-circle"
-                                     style="border:1px solid #abcdef;width: 50px;">
+                                <img alt="50x50" data-src="holder.js/50x50" class="img-circle"
+                                     style="border:1px solid #abcdef;width:50px;">
                                 {% endif %}
                             </i>
                         </a>
@@ -176,8 +177,8 @@
                                 <div class="comment-meta">
                                     <a class="comment-author" href="user.html">{{ v.user.name }}</a>
                                     评论于
-                                    <time title="{{ v.addtime }}" datetime="{{ v.addtime }}">{{ v.addtime }}
-
+                                    <time title="{{ v.addtime }}" datetime="{{ v.addtime }}">
+                                        {{ v.addtime }}
                                     </time>
                                 </div>
                             </header>
@@ -189,18 +190,28 @@
                     {% endfor %}
                 </ul>
                 <div class="col-md-12 text-center">
-                    {{ pg.page(page_data,'home.play',movie.id) }}
+                    {{ pg.page(page_data,'home.video',movie.id) }}
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %}
 
 {% block js %}
 <!--播放页面-->
-<script src="{{ url_for('static', filename='jwplayer/jwplayer.js')}}"></script>
+<script>
+    var dp1 = new DPlayer({
+        element: document.getElementById('dplayer1'),
+        video: {
+            url: "{{ url_for('static',filename='uploads/'+movie.url) }}",
+        },
+        danmaku: {
+            id: '{{ movie.id }}',
+            api: "/tm/"
+        }
+    });
+</script>
 <script>
     var ue = UE.getEditor('input_content', {
         toolbars: [
@@ -209,35 +220,8 @@
         initialFrameWidth: "100%",
         initialFrameHeight: "100",
     });
-</script>
-<script type="text/javascript">
-    jwplayer.key = "P9VTqT/X6TSP4gi/hy1wy23BivBhjdzVjMeOaQ==";
-</script>
-<script type="text/javascript">
-    jwplayer("moviecontainer").setup({
-        flashplayer: "{{ url_for('static', filename='jwplayer/jwplayer.flash.swf')}}",
-        playlist: [{
-            file: "{{ url_for('static', filename='uploads/'+ movie.url)}}",
-            title: "{{ movie.title }}"
-        }],
-        modes: [{
-            type: "html5"
-        }, {
-            type: "flash",
-            src: "{{ url_for('static', filename='jwplayer/jwplayer.flash.swf')}}"
-        }, {
-            type: "download"
-        }],
-        skin: {
-            name: "vapor"
-        },
-        "playlist.position": "left",
-        "playlist.size": 200,
-        height: 500,
-        width: 774,
-    });
-</script>
 
+</script>
 <script>
     $(document).ready(function () {
         $("#btn-col").click(function () {
@@ -271,6 +255,5 @@
         });
     });
 </script>
-
 <!--播放页面-->
 {% endblock %}
