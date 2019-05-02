@@ -240,36 +240,28 @@
 
 <script>
     $(document).ready(function () {
-        $("#btn-col").click(function () {
-            var mid = {
-            {
-                movie.id
-            }
-        }
-            ;
-            var uid = {
-            {
-                session['user_id']
-            }
-        }
-            ;
-            $.ajax({
-                url: "{{ url_for('home.moviecol_add') }}",
-                type: "GET",
-                data: "mid=" + mid + "&uid=" + uid,
-                dataType: "json",
-                success: function (res) {
-                    if (res.ok == 1) {
-                        $("#show_col_msg").empty();
-                        $("#show_col_msg").append("收藏成功！");
-                    } else {
-                        $("#show_col_msg").empty();
-                        $("#show_col_msg").append("已经收藏！");
+            $("#btn-col").click(function () {
+                var mid = {{ movie.id }};
+                var uid = {{ session['user_id'] }};
+                $.ajax({
+                    url: "{{ url_for('home.moviecol_add') }}",
+                    type: "GET",
+                    data: "mid=" + mid + "&uid=" + uid,
+                    dataType: "json",
+                    success: function (res) {
+                        if (res.ok == 1) {
+                            $("#show_col_msg").empty();
+                            $("#show_col_msg").append("收藏成功！");
+                        } else {
+                            $("#show_col_msg").empty();
+                            $("#show_col_msg").append("已经收藏！");
+                        }
                     }
-                }
-            })
+                })
+            });
         });
-    });
+
+
 </script>
 
 <!--播放页面-->

@@ -309,6 +309,7 @@ def moviecol_add():
 @home.route('/moviecol/<int:page>', methods=["GET", "POST"])
 @user_login_req
 def moviecol(page=None):
+    print("收藏电影")
     if page is None:
         page = 1
     page_data = Moviecol.query.join(
@@ -325,7 +326,6 @@ def moviecol(page=None):
 
 
 # 删除收藏电影
-# 删除收藏
 @home.route("/moviecol/del/<int:id>", methods=["GET"])
 @user_login_req
 def moviecol_del(id=None):
@@ -372,6 +372,7 @@ def search(page=None):
 @home.route('/play/<int:id>/<int:page>/', methods=["GET", "POST"])
 @user_login_req
 def play(id=None, page=None):
+    print("评论电影")
     movie = Movie.query.join(Tag).filter(
         Tag.id == Movie.tag_id,
         Movie.id == int(id)
